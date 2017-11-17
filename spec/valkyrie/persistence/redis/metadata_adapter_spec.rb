@@ -10,7 +10,7 @@ RSpec.describe Valkyrie::Persistence::Redis::MetadataAdapter do
     end
   end
 
-  let(:adapter) { described_class.new(expiration: nil) }
+  let(:adapter) { described_class.new }
   it_behaves_like "a Valkyrie::MetadataAdapter"
 
   describe 'with expiring keys' do

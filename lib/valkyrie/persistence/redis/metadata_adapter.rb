@@ -9,7 +9,7 @@ module Valkyrie::Persistence::Redis
     # @param redis [Redis] The Redis connection to index to.
     # @param cache_prefix [String] A string to use as the ID prefix in the cache
     # @param expiration [Integer] The time (in seconds) for new writes to stay in the cache
-    def initialize(redis: Redis.new, cache_prefix: '_valkyrie_', expiration: 30.minutes)
+    def initialize(redis: Redis.new, cache_prefix: '_valkyrie_', expiration: nil)
       @cache_prefix = cache_prefix
       @expiration = expiration
       @cache = redis

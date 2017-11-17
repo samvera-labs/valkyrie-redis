@@ -17,7 +17,7 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
 
   describe 'with everything in the cache' do
     let(:primary) { NullPersistence::MetadataAdapter.new }
-    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new }
+    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: 5) }
     let(:adapter) { Valkyrie::Persistence::WriteCached::MetadataAdapter.new(primary_adapter: primary, cache_adapter: cache) }
     it_behaves_like "a Valkyrie query provider"
   end

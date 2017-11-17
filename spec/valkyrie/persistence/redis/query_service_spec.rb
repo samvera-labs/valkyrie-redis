@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'valkyrie/specs/shared_specs'
 
 RSpec.describe Valkyrie::Persistence::Redis::QueryService do
-  let(:adapter) { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: nil) }
+  let(:adapter) { Valkyrie::Persistence::Redis::MetadataAdapter.new }
 
   before do
     Redis.new.tap do |r|

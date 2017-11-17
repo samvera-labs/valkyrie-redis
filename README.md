@@ -24,7 +24,7 @@ Follow the Valkyrie README to get a development or production environment up and
 add the following to your application's `config/initializers/valkyrie.rb`:
 
     Valkyrie::MetadataAdapter.register(
-      Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: nil),
+      Valkyrie::Persistence::Redis::MetadataAdapter.new,
       :redis
     )
 
