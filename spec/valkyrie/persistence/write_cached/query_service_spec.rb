@@ -23,7 +23,7 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
   end
 
   describe 'with nothing in the cache' do
-    let(:client) { RSolr.connect(url: SOLR_TEST_URL) }
+    let(:client)  { RSolr.connect(url: SOLR_TEST_URL) }
     let(:primary) { Valkyrie::Persistence::Solr::MetadataAdapter.new(connection: client) }
     let(:cache)   { NullPersistence::MetadataAdapter.new }
     let(:adapter) { Valkyrie::Persistence::WriteCached::MetadataAdapter.new(primary_adapter: primary, cache_adapter: cache) }
@@ -31,8 +31,10 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
   end
 
   describe 'with a 10-second delayed write primary store and a 15-second expiring cache' do
-    let(:client) { RSolr.connect(url: SOLR_TEST_URL) }
-    let(:primary) { Valkyrie::Persistence::Solr::MetadataAdapter.new(connection: client, commit_params: { commitWithin: 10 }) }
+    before { set_solr_commit(10)  }
+    after  { set_solr_commit(nil) }
+    let(:client)  { RSolr.connect(url: SOLR_TEST_URL) }
+    let(:primary) { Valkyrie::Persistence::Solr::MetadataAdapter.new(connection: client) }
     let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: 5) }
     let(:adapter) { Valkyrie::Persistence::WriteCached::MetadataAdapter.new(primary_adapter: primary, cache_adapter: cache) }
     it_behaves_like "a Valkyrie query provider"
