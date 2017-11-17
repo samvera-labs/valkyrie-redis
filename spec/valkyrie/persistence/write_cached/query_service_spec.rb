@@ -31,8 +31,8 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
   end
 
   describe 'with a 10-second delayed write primary store and a 15-second expiring cache' do
-    before { set_solr_commit(10)  }
-    after  { set_solr_commit(nil) }
+    before { solr_commit_params(10)  }
+    after  { solr_commit_params(nil) }
     let(:client)  { RSolr.connect(url: SOLR_TEST_URL) }
     let(:primary) { Valkyrie::Persistence::Solr::MetadataAdapter.new(connection: client) }
     let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: 5) }

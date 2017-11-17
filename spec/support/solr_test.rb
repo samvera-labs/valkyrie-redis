@@ -10,7 +10,7 @@ RSpec.configure do |config|
   end
 end
 
-def set_solr_commit(value)
+def solr_commit_params(value)
   params = value.nil? ? { softCommit: true } : { commitWithin: 10 }
   Kernel.silence_warnings do
     Valkyrie::Persistence::Solr::Repository.const_set(:COMMIT_PARAMS, params)
