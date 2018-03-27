@@ -13,12 +13,20 @@ module Valkyrie::Persistence::WriteCached
     #   isn't in the persistence backend.
     # @return [Valkyrie::Resource] The object being searched for.
     def find_by(id:)
+      id = Valkyrie::ID.new(id.to_s) if id.is_a?(String)
       raise ::Valkyrie::Persistence::ObjectNotFoundError if @cache.respond_to?(:gone?) && @cache.gone?(id: id)
       begin
         @cache.find_by(id: id)
       rescue ::Valkyrie::Persistence::ObjectNotFoundError
         @primary.find_by(id: id)
       end
+    end
+
+    # @param ids [Array<Valkyrie::ID, String>] The IDs to query for.
+    # @raise [ArgumentError] Raised when any ID is not a String or a Valkyrie::ID
+    # @return [Array<Valkyrie::Resource>] All requested objects that were found
+    def find_many_by_ids(ids:)
+      reconcile(:find_many_by_ids, ids: ids)
     end
 
     # @return [Array<Valkyrie::Resource>] All objects in the persistence backend.

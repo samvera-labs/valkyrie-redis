@@ -16,8 +16,11 @@ module Valkyrie::Persistence::Redis
     #   persistence backend.
     def save(resource:)
       resource = generate_id(resource) if resource.id.blank?
+      resource.created_at ||= Time.current
       resource.updated_at = Time.current
+      resource.new_record = false
       normalize_dates!(resource)
+      ensure_multiple_values!(resource)
       resource.tap { |r| cache.set(key_for(r), Marshal.dump(r), ex: expiration) }
     end
 
@@ -57,6 +60,13 @@ module Valkyrie::Persistence::Redis
 
       def generate_id(resource)
         resource.new(id: SecureRandom.uuid, created_at: Time.current)
+      end
+
+      def ensure_multiple_values!(resource)
+        bad_keys = resource.attributes.except(:internal_resource, :created_at, :updated_at, :new_record, :id).select do |_k, v|
+          !v.nil? && !v.is_a?(Array)
+        end
+        raise ::Valkyrie::Persistence::UnsupportedDatatype, "#{resource}: #{bad_keys.keys} have non-array values, which can not be persisted by Valkyrie. Cast to arrays." unless bad_keys.keys.empty?
       end
 
       def normalize_dates!(resource)

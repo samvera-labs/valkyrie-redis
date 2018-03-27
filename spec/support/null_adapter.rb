@@ -33,6 +33,10 @@ module NullPersistence
       raise ::Valkyrie::Persistence::ObjectNotFoundError
     end
 
+    def find_many_by_ids(ids:)
+      []
+    end
+
     def find_all
       []
     end

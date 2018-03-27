@@ -15,8 +15,22 @@ module Valkyrie::Persistence::Redis
     #   isn't in the persistence backend.
     # @return [Valkyrie::Resource] The object being searched for.
     def find_by(id:)
+      id = Valkyrie::ID.new(id.to_s) if id.is_a?(String)
       validate_id(id)
       fetch(id) || raise(::Valkyrie::Persistence::ObjectNotFoundError)
+    end
+
+    # @param ids [Array<Valkyrie::ID, String>] The IDs to query for.
+    # @raise [ArgumentError] Raised when any ID is not a String or a Valkyrie::ID
+    # @return [Array<Valkyrie::Resource>] All requested objects that were found
+    def find_many_by_ids(ids:)
+      ids.map do |id|
+        begin
+          find_by(id: id)
+        rescue ::Valkyrie::Persistence::ObjectNotFoundError
+          nil
+        end
+      end.reject(&:nil?)
     end
 
     # @return [Array<Valkyrie::Resource>] All objects in the persistence backend.
@@ -68,6 +82,7 @@ module Valkyrie::Persistence::Redis
     #   which have the ID of the given `resource` in their `property` property. Not
     #   in order.
     def find_inverse_references_by(resource:, property:)
+      ensure_persisted(resource)
       find_all.select do |obj|
         begin
           Array.wrap(obj[property]).include?(resource.id)
@@ -102,6 +117,10 @@ module Valkyrie::Persistence::Redis
     end
 
     private
+
+      def ensure_persisted(resource)
+        raise ArgumentError, 'resource is not saved' unless resource.persisted?
+      end
 
       def load(key)
         object = cache.get(key)

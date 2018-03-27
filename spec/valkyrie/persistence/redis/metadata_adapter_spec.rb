@@ -4,13 +4,13 @@ require 'valkyrie/specs/shared_specs'
 
 RSpec.describe Valkyrie::Persistence::Redis::MetadataAdapter do
   before do
-    Redis.new.tap do |r|
+    redis_client.tap do |r|
       keys = r.keys('_valkyrie_*')
       r.del(*keys) unless keys.empty?
     end
   end
 
-  let(:adapter) { described_class.new }
+  let(:adapter) { described_class.new(redis: redis_client) }
   it_behaves_like "a Valkyrie::MetadataAdapter"
 
   describe 'with expiring keys' do
@@ -24,7 +24,7 @@ RSpec.describe Valkyrie::Persistence::Redis::MetadataAdapter do
     end
 
     let(:id) { SecureRandom.uuid }
-    let(:adapter) { described_class.new(expiration: 2) }
+    let(:adapter) { described_class.new(redis: redis_client, expiration: 2) }
     let(:persister) { adapter.persister }
     let(:query_service) { adapter.query_service }
     let!(:expiring_resource) { adapter.persister.save(resource: Resource.new(id: id)) }

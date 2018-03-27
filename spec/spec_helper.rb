@@ -20,3 +20,7 @@ require 'pry'
 
 ROOT_PATH = Pathname.new(Dir.pwd)
 Dir[Pathname.new("./").join("spec", "support", "**", "*.rb")].sort.each { |file| require_relative file.gsub(/^spec\//, "") }
+
+def redis_client
+  Redis.new(port: 6381)
+end

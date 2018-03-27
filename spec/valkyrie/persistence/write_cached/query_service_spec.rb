@@ -4,7 +4,7 @@ require 'valkyrie/specs/shared_specs'
 
 RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
   before do
-    Redis.new.tap do |r|
+    redis_client.tap do |r|
       keys = r.keys('_valkyrie_*')
       r.del(*keys) unless keys.empty?
     end
@@ -17,7 +17,7 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
 
   describe 'with everything in the cache' do
     let(:primary) { NullPersistence::MetadataAdapter.new }
-    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: 5) }
+    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(redis: redis_client, expiration: 5) }
     let(:adapter) { Valkyrie::Persistence::WriteCached::MetadataAdapter.new(primary_adapter: primary, cache_adapter: cache) }
     it_behaves_like "a Valkyrie query provider"
   end
@@ -35,7 +35,7 @@ RSpec.describe Valkyrie::Persistence::WriteCached::QueryService do
     after  { solr_commit_params(nil) }
     let(:client)  { RSolr.connect(url: SOLR_TEST_URL) }
     let(:primary) { Valkyrie::Persistence::Solr::MetadataAdapter.new(connection: client) }
-    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(expiration: 5) }
+    let(:cache)   { Valkyrie::Persistence::Redis::MetadataAdapter.new(redis: redis_client, expiration: 5) }
     let(:adapter) { Valkyrie::Persistence::WriteCached::MetadataAdapter.new(primary_adapter: primary, cache_adapter: cache) }
     it_behaves_like "a Valkyrie query provider"
   end
