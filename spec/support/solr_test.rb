@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-SOLR_TEST_URL = "http://127.0.0.1:#{ENV['TEST_JETTY_PORT'] || 8984}/solr/blacklight-core-test"
+SOLR_TEST_URL = "http://127.0.0.1:#{ENV['TEST_JETTY_PORT'] || 8985}/solr/test-core"
 RSpec.configure do |config|
   config.before do
     # Suppress all the warnings about Solr generating IDs

@@ -32,6 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bixby"
   spec.add_development_dependency 'rubocop', '~> 0.48.0'
   spec.add_development_dependency 'yard'
-  spec.add_development_dependency 'solr_wrapper'
-  spec.add_development_dependency 'open4'
+  spec.add_development_dependency 'docker-stack', '~> 0.2.6'
 end

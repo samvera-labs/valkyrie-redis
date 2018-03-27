@@ -3,6 +3,7 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require 'rubocop/rake_task'
+require 'rspec/core/rake_task'
 
 task(:default).clear
 task default: [:spec]
@@ -22,4 +23,6 @@ end
 
 task default: "bundler:audit"
 
-import 'lib/tasks/dev.rake'
+Dir['./lib/tasks/*.rake'].each do |rakefile|
+  import rakefile
+end
