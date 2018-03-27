@@ -15,7 +15,7 @@ begin
 
     desc 'Spin up test stack and run specs'
     task :spec do
-      Docker::Stack::Controller.new(project: 'valkyrie-redis', cleanup: true).with_containers do
+      Docker::Stack::Controller.new(project: 'valkyrie-redis', env: 'test', cleanup: true).with_containers do
         Rake::Task[:spec].invoke
       end
     end
